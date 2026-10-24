@@ -36,6 +36,7 @@ fi
 
 if command -v nginx >/dev/null; then
   tmp="$(mktemp -d)"
+  sed 's/listen 80;/listen 127.0.0.1:8088;/' "${ROOT}/nginx/default.conf" >"${tmp}/server.conf"
   cat >"${tmp}/nginx.conf" <<EOF
 worker_processes 1;
 error_log ${tmp}/error.log;
@@ -44,7 +45,7 @@ events { worker_connections 64; }
 http {
     include /etc/nginx/mime.types;
     access_log ${tmp}/access.log;
-    include ${ROOT}/nginx/default.conf;
+    include ${tmp}/server.conf;
 }
 EOF
   nginx -t -c "${tmp}/nginx.conf"
