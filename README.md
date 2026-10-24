@@ -26,10 +26,11 @@ Não emite certificado, não cria usuário no servidor e não abre a porta 80 po
 ```
 deploy-minimo/
 ├── site/                 index.html e styles.css
-├── nginx/default.conf    server block. O mesmo arquivo vai para o servidor
+├── nginx/default.conf    server block. root /var/www/deploy-minimo
 ├── scripts/deploy.sh     rsync local ou user@host:path
+├── scripts/check.sh      recusa caminho perigoso e confere o nginx -t
 ├── docker-compose.yml    prova o nginx em 127.0.0.1:8088
-└── README.md
+└── .github/workflows/    check no push
 ```
 
 ## Como rodar
@@ -71,7 +72,16 @@ sudo chown deploy:deploy /var/www/deploy-minimo
 sudo cp nginx/default.conf /etc/nginx/conf.d/deploy-minimo.conf
 ```
 
-Ajuste o `root` desse conf para `/var/www/deploy-minimo` antes de copiar. No Compose o root continua `/usr/share/nginx/html`, que é o volume de `site/`.
+No servidor, uma vez:
+
+```bash
+sudo mkdir -p /var/www/deploy-minimo
+sudo chown deploy:deploy /var/www/deploy-minimo
+sudo cp nginx/default.conf /etc/nginx/conf.d/deploy-minimo.conf
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+O `root` do conf já é `/var/www/deploy-minimo`. O Compose monta `site/` nesse mesmo caminho. O script recusa destino curto demais (`/`, `/var/www`, `/tmp`) para o `--delete` não apagar uma pasta do sistema.
 
 HTTPS fica de fora de propósito. O passo seguinte, se o domínio já aponta para a máquina, é o Certbot no próprio nginx. Não faz parte deste mínimo.
 

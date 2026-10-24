@@ -1,0 +1,22 @@
+name: check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: rsync e nginx
+        run: sudo apt-get update && sudo apt-get install -y rsync nginx
+      - name: script e config
+        run: bash scripts/check.sh
+      - name: sobe o mesmo conf do repositório
+        run: docker compose up -d
+      - name: a página responde
+        run: curl -fsS http://127.0.0.1:8088/ | grep -q "O mínimo para publicar."
+      - name: desliga
+        if: always()
+        run: docker compose down
