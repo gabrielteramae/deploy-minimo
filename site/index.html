@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deploy mínimo</title>
+  <meta name="description" content="Site estático publicado com rsync e servido por nginx.">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main>
+    <p class="kicker">rsync + nginx</p>
+    <h1>O mínimo para publicar.</h1>
+    <p class="lede">Esta página não passou por GitHub Pages nem por Vercel. O diretório <code>site/</code> foi copiado com rsync. O nginx só entrega os arquivos.</p>
+
+    <h2>1. Servir</h2>
+    <ol>
+      <li>
+        O mesmo arquivo deste repositório vai em <code>/etc/nginx/conf.d/deploy-minimo.conf</code>.
+        <pre>sudo nginx -t && sudo systemctl reload nginx</pre>
+      </li>
+    </ol>
+
+    <h2>2. Enviar</h2>
+    <ol>
+      <li>
+        Da máquina de trabalho, com SSH já autorizado no servidor.
+        <pre>DEPLOY_HOST=exemplo.com DEPLOY_USER=deploy \
+DEPLOY_PATH=/var/www/deploy-minimo \
+scripts/deploy.sh</pre>
+      </li>
+    </ol>
+
+    <footer>Se esta página abriu, o nginx achou o <code>index.html</code>.</footer>
+  </main>
+</body>
+</html>
