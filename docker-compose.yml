@@ -4,5 +4,5 @@ services:
     ports:
       - "8088:80"
     volumes:
-      - ./site:/var/www/deploy-minimo:ro
+      - ./site:/var/www/deploy-minimo/current:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
